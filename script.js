@@ -1,50 +1,66 @@
-const prompt = require("prompt-sync")({sigint:true});
+// Define global variables
+let playerScore = 0;
+let computerScore = 0;
+const scoreToWin = 5;
+const resultsDiv = document.querySelector('#results');
+const scoreDiv = document.querySelector('#score');
 
-const getComputerChoice = () => {
-    result = Math.floor(Math.random() * 3)
-    if (result === 0){
-        return "rock"
-    } else if (result === 1){
-        return "paper"
-    } else return "scissor"
+// Function to randomly select computer's choice
+function computerPlay() {
+    const choices = ['rock', 'paper', 'scissors'];
+    const randomIndex = Math.floor(Math.random() * choices.length);
+    return choices[randomIndex];
 }
 
-const playRound = (playerSelection, computerSelection) => {
-    p = playerSelection.toLowerCase()
-    c = computerSelection
-    if (p === c) {
-        return "It's a tie"
-    } else if (p === "rock") {
-        if (c === "paper") {
-            return "Computer win!"
-        } else if (c === "scissor") {
-            return "Player win!"
-        }
-    } else if (p === " scissor") {
-        if (c === "paper") {
-            return "Player win!"
-        } else if (c === " rock") {
-            return "Computer win!"
-        }
-    } else if (p === "paper"){
-        if (c === "scissor") {
-            return "Computer win!"
-        } else if (c === "rock") {
-            return "Player win!"
-        }
+// Function to play a single round of the game
+function playRound(playerSelection, computerSelection) {
+    if (playerSelection === computerSelection) {
+        return 'Tie!';
+    } else if (playerSelection === 'rock' && computerSelection === 'scissors' ||
+               playerSelection === 'paper' && computerSelection === 'rock' ||
+               playerSelection === 'scissors' && computerSelection === 'paper') {
+        playerScore++;
+        return `You win! ${playerSelection} beats ${computerSelection}`;
     } else {
-        return "No such option. Please try again!"
+        computerScore++;
+        return `You lose! ${computerSelection} beats ${playerSelection}`;
     }
 }
 
+// Function to update score and check for winner
+function updateScore() {
+    scoreDiv.textContent = `Player: ${playerScore} | Computer: ${computerScore}`;
 
-const game = () => {
-    for (let i=0; i<5; i++){
-        let playerSelection = prompt("Insert your decision (\"Rock/Paper/Scissor\"): ");
-        const computerSelection = getComputerChoice()
-        console.log(`Computer: ${computerSelection}`)
-        console.log(playRound(playerSelection, computerSelection))
+    if (playerScore === scoreToWin || computerScore === scoreToWin) {
+        let winner;
+        if (playerScore > computerScore) {
+            winner = 'Player';
+        } else {
+            winner = 'Computer';
+        }
+        resultsDiv.textContent = `${winner} wins the game!`;
+        // Disable buttons after game is over
+        document.querySelectorAll('button').forEach(button => {
+            button.disabled = true;
+        });
     }
 }
 
-game()
+// Add event listeners to buttons
+document.querySelector('#rock').addEventListener('click', () => {
+    const result = playRound('rock', computerPlay());
+    resultsDiv.textContent = result;
+    updateScore();
+});
+
+document.querySelector('#paper').addEventListener('click', () => {
+    const result = playRound('paper', computerPlay());
+    resultsDiv.textContent = result;
+    updateScore();
+});
+
+document.querySelector('#scissors').addEventListener('click', () => {
+    const result = playRound('scissors', computerPlay());
+    resultsDiv.textContent = result;
+    updateScore();
+});
