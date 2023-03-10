@@ -39,11 +39,35 @@ function updateScore() {
             winner = 'Computer';
         }
         resultsDiv.textContent = `${winner} wins the game!`;
+
         // Disable buttons after game is over
         document.querySelectorAll('button').forEach(button => {
             button.disabled = true;
+            button.setAttribute('style', 'cursor: default;')
         });
+        restartGame()
+
     }
+}
+
+function restartGame() {
+    const div = document.createElement('div')
+    div.classList.add('rep')
+    div.setAttribute('style', 'display: flex; flex: 1; justify-content: center;')
+    const restart = document.createElement('button')
+    restart.setAttribute('id', 'restart')
+    restart.setAttribute('style', 'padding-left: 50px; padding-right: 50px;')
+    restart.textContent = 'Replay'
+    div.append(restart)
+    document.body.appendChild(div);
+    refreshPage()
+}
+
+function refreshPage() {
+    const button = document.querySelector('#restart');
+    button.addEventListener('click', function() {
+        location.reload();
+    });
 }
 
 // Add event listeners to buttons
